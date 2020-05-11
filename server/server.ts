@@ -8,14 +8,14 @@ const typeDefs = gql`
   type Query {
     test: String!
   }
-  type Mutation  @portara(limit: 8, per: 100){
+  type Mutation @portara(limit: 2, per: "100") {
     hello: String! @portara(limit: 2, per: "100")
-    bye: String! #@portara(limit: 2)
+    bye: String! 
   }
 `;
 
 // Resolvers
-const resolvers = {
+export const resolvers = {
   Query: {
     test: (parent, args, context, info) => {
       return 'Test'
@@ -23,6 +23,7 @@ const resolvers = {
   },
   Mutation: {
     hello: (parent, args, context, info) => {
+      // console.log(info)
       return 'Request completed and returned';
     },
     bye: (parent, args, context, info) => {

@@ -9,7 +9,7 @@ const asyncRedis = require('async-redis');
 const client = asyncRedis.createClient();
 
 // Redis Rate Limiter -------------------------------------------
-const rateLimiter = async (limit: number, per: string, ip: string, scope: string) => {
+export const rateLimiter = async (limit: number, per: string, ip: string, scope: string) => {
 
   // Per Functionality ---------------------------
 
@@ -61,8 +61,9 @@ export class portaraSchemaDirective extends SchemaDirectiveVisitor {
   visitFieldDefinition(field: GraphQLField<any, any>, details) {
     const { limit, per } = this.args;
     const { resolve = defaultFieldResolver } = field;
-
+    
     field.resolve = async (...originalArgs) => {
+      console.log('hit')
       const [object, args, context, info] = originalArgs;
       const underLimit = await rateLimiter(limit, per, context.req.ip, info.fieldName);
       if (underLimit) {
@@ -75,6 +76,7 @@ export class portaraSchemaDirective extends SchemaDirectiveVisitor {
   visitObject(type: GraphQLObjectType) {
     const { limit, per } = this.args;
     const fields = type.getFields();
+    console.log('hey')
 
     Object.values(fields).forEach((field) => {
       const { resolve = defaultFieldResolver } = field;
